@@ -2,27 +2,20 @@ package pfr.center.models;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import pfr.center.MainUI;
 
-
-import javax.sql.DataSource;
 import java.util.List;
 
-@Transactional
-@Repository
-public class StaffDAO implements IRepoStaff {
+public class InfocenterDAO implements IRepository{
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     final private String SQL_GET_ALL = "SELECT * FROM staff";
     final private String SQL_GET_STAFF = "SELECT * FROM staff WHERE staff.ID_STAFF = ?";
+    final private String SQL_GET_ALLDEPART = "SELECT * FROM department ORDER BY NAME_REG";
 
-
-    public StaffDAO() {
+    public InfocenterDAO() {
         jdbcTemplate = new JdbcTemplate();
         jdbcTemplate.setDataSource(MainUI.getDataSource());
     }
@@ -35,5 +28,10 @@ public class StaffDAO implements IRepoStaff {
     @Override
     public Staff getStaffbyId(Long id) {
         return (Staff) jdbcTemplate.query(SQL_GET_STAFF,new Object[] { id }, new StaffMapper());
+    }
+
+    @Override
+    public List<Department> getAllDepartment() {
+        return jdbcTemplate.query(SQL_GET_ALLDEPART, new DepartmentMapper());
     }
 }

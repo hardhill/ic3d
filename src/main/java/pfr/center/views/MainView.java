@@ -9,6 +9,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.MenuBar.MenuItem;
 import pfr.center.MainUI;
 import pfr.center.UserInfo;
+import pfr.center.models.Department;
 import pfr.center.models.Ostatki;
 import pfr.center.views.components.InfostatChart;
 
@@ -19,6 +20,7 @@ public class MainView extends VerticalLayout implements View {
     private HorizontalLayout panelGraph = new HorizontalLayout();
     private MenuBar menuMain = new MenuBar();
     private Link linkPortal = new Link("ИНФОЦЕНТР-ПОРТАЛ", new ExternalResource("http://10.3.59.113/"));
+    private ComboBox<Department> selectorDepart = new ComboBox<Department>();
 
     public MainView(MainUI main) {
         this.main = main;
@@ -39,6 +41,7 @@ public class MainView extends VerticalLayout implements View {
         panelMenu.setWidth("100%");
         panelMenu.addComponent(menuMain);
         panelMenu.setComponentAlignment(menuMain, Alignment.MIDDLE_LEFT);
+        panelMenu.addComponents(selectorDepart);
         panelMenu.addComponent(linkPortal);
         panelMenu.setComponentAlignment(linkPortal, Alignment.MIDDLE_RIGHT);
         linkPortal.setTargetName("_blank");

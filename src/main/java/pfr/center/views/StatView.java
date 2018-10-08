@@ -6,28 +6,24 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.VerticalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import pfr.center.MainUI;
 import pfr.center.UserInfo;
+import pfr.center.models.InfocenterDAO;
 import pfr.center.models.Staff;
-import pfr.center.models.StaffDAO;
-import pfr.center.util.Util;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class StatView extends VerticalLayout implements View {
 
-    StaffDAO staffDAO;
+    InfocenterDAO infocenterDAO;
     MainUI main;
     public StatView(MainUI main)  {
         this.main = main;
-        staffDAO = new StaffDAO();
+        infocenterDAO = new InfocenterDAO();
         List<Staff> people = new ArrayList<>();
-        people = staffDAO.getAllStaff();
+        people = infocenterDAO.getAllStaff();
 
         Grid<Staff> grid = new Grid<>();
         grid.addColumn(Staff::getFa).setCaption("Фамилия");
