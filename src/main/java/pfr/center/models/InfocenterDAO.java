@@ -34,4 +34,6 @@ public class InfocenterDAO implements IRepository{
     public List<Department> getAllDepartment() {
         return jdbcTemplate.query(SQL_GET_ALLDEPART, new DepartmentMapper());
     }
+
+
 }

@@ -12,8 +12,11 @@ import pfr.center.UserInfo;
 import pfr.center.models.Department;
 import pfr.center.models.InfocenterDAO;
 import pfr.center.models.Ostatki;
+import pfr.center.models.Staff;
 import pfr.center.views.components.InfostatChart;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MainView extends VerticalLayout implements View {
@@ -24,13 +27,31 @@ public class MainView extends VerticalLayout implements View {
     private HorizontalLayout panelGraph = new HorizontalLayout();
     private MenuBar menuMain = new MenuBar();
     private Link linkPortal = new Link("ИНФОЦЕНТР-ПОРТАЛ", new ExternalResource("http://10.3.59.113/"));
-    private ComboBox<Department> selectorDepart = new ComboBox<Department>();
+    private ComboBox<Department> selectorDepart = new ComboBox<>();
 
     public MainView(MainUI main) {
         this.main = main;
         this.setMargin(true);
-        List<Department> lstDepart = infocenterDAO.getAllDepartment();
-        selectorDepart.setItems(lstDepart);
+        infocenterDAO = new InfocenterDAO();
+        List<Department> departments = new ArrayList<>();
+        departments = infocenterDAO.getAllDepartment();
+        selectorDepart.setItemCaptionGenerator(Department::getName_reg);
+        selectorDepart.setWidth("250px");
+        selectorDepart.setItems(departments);
+        selectorDepart.setEmptySelectionAllowed(false);
+        selectorDepart.setEmptySelectionCaption("ЦУВП ПФР в РБ");
+        selectorDepart.addValueChangeListener(event->{
+            if(event.getSource().isEmpty()){
+
+            }else if(event.getOldValue()==null){
+                // поменять график
+               Department dep = event.getValue();
+               dep.getId_depart();
+
+            }else{
+
+            }
+        });
         //selectorDepart.
         Ostatki ostatki = new Ostatki();
 
@@ -50,11 +71,12 @@ public class MainView extends VerticalLayout implements View {
         panelMenu.setWidth("100%");
         panelMenu.addComponent(menuMain);
         panelMenu.setComponentAlignment(menuMain, Alignment.MIDDLE_LEFT);
-        panelMenu.addComponents(selectorDepart);
+
         panelMenu.addComponent(linkPortal);
         panelMenu.setComponentAlignment(linkPortal, Alignment.MIDDLE_RIGHT);
         linkPortal.setTargetName("_blank");
         addComponent(panelMenu);
+        addComponent(selectorDepart);
         DrawMainMenu(menuMain);
 
         //panelGraph.setWidth(800f,Unit.PIXELS);
