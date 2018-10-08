@@ -13,7 +13,7 @@ public class InfocenterDAO implements IRepository{
 
     final private String SQL_GET_ALL = "SELECT * FROM staff";
     final private String SQL_GET_STAFF = "SELECT * FROM staff WHERE staff.ID_STAFF = ?";
-    final private String SQL_GET_ALLDEPART = "SELECT * FROM department ORDER BY NAME_REG";
+    final private String SQL_GET_ALLDEPART = "SELECT * FROM department ORDER BY department.NAME_REG";
 
     public InfocenterDAO() {
         jdbcTemplate = new JdbcTemplate();
