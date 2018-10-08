@@ -10,11 +10,15 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import pfr.center.MainUI;
 import pfr.center.UserInfo;
 import pfr.center.models.Department;
+import pfr.center.models.InfocenterDAO;
 import pfr.center.models.Ostatki;
 import pfr.center.views.components.InfostatChart;
 
+import java.util.List;
+
 public class MainView extends VerticalLayout implements View {
     InfostatChart chart;
+    private InfocenterDAO infocenterDAO;
     private MainUI main;
     private HorizontalLayout panelMenu = new HorizontalLayout();
     private HorizontalLayout panelGraph = new HorizontalLayout();
@@ -25,7 +29,11 @@ public class MainView extends VerticalLayout implements View {
     public MainView(MainUI main) {
         this.main = main;
         this.setMargin(true);
+        List<Department> lstDepart = infocenterDAO.getAllDepartment();
+        selectorDepart.setItems(lstDepart);
+        //selectorDepart.
         Ostatki ostatki = new Ostatki();
+
         ostatki.Add("сен 04", 1024);
         ostatki.Add("сен 05", 760);
         ostatki.Add("сен 06", 804);
@@ -36,6 +44,7 @@ public class MainView extends VerticalLayout implements View {
         ostatki.Add("сен 13", 837);
         ostatki.Add("сен 14", 809);
         ostatki.Add("сен 15", 943);
+
         chart = new InfostatChart(ostatki, "Динамика остатков ЦУВП ПФР в Республике Бурятия", 1300f);
 
         panelMenu.setWidth("100%");

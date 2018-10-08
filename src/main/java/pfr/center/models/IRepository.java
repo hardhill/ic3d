@@ -6,4 +6,5 @@ public interface IRepository {
     List<Staff> getAllStaff();
     Staff getStaffbyId(Long id);
     List<Department> getAllDepartment();
+
 }
