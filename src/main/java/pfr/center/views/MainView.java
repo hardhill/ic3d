@@ -9,12 +9,11 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.MenuBar.MenuItem;
 import pfr.center.MainUI;
 import pfr.center.UserInfo;
-import pfr.center.models.Department;
-import pfr.center.models.InfocenterDAO;
-import pfr.center.models.Ostatki;
-import pfr.center.models.Staff;
+import pfr.center.models.*;
+import pfr.center.util.Util;
 import pfr.center.views.components.InfostatChart;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,12 +27,14 @@ public class MainView extends VerticalLayout implements View {
     private MenuBar menuMain = new MenuBar();
     private Link linkPortal = new Link("ИНФОЦЕНТР-ПОРТАЛ", new ExternalResource("http://10.3.59.113/"));
     private ComboBox<Department> selectorDepart = new ComboBox<>();
+    private ProcessCompl processCompl = new ProcessCompl();
 
     public MainView(MainUI main) {
         this.main = main;
         this.setMargin(true);
         infocenterDAO = new InfocenterDAO();
         List<Department> departments = new ArrayList<>();
+        Date[] dates10 = Util.GetLastTenDates();
         departments = infocenterDAO.getAllDepartment();
         selectorDepart.setItemCaptionGenerator(Department::getName_reg);
         selectorDepart.setWidth("250px");
@@ -46,27 +47,39 @@ public class MainView extends VerticalLayout implements View {
             }else if(event.getOldValue()==null){
                 // поменять график
                Department dep = event.getValue();
-               dep.getId_depart();
+
+                processCompl.DeleteAll();
+                for(Date d:dates10){
+                    ProcessEnd processEnd = infocenterDAO.getProcesses(dep.getId_depart(),d);
+                    processCompl.Add(processEnd.getDateofcomp().toString(),processEnd.getSumm());
+                }
+
 
             }else{
 
             }
         });
+        //по-умолчанию взял ЦУВП
+        for(Date d:dates10){
+            ProcessEnd processEnd = infocenterDAO.getProcesses(25,d);
+            processCompl.Add(processEnd.getDateofcomp().toString(),processEnd.getSumm());
+        }
+
         //selectorDepart.
-        Ostatki ostatki = new Ostatki();
+//        Ostatki ostatki = new Ostatki();
+//
+//        ostatki.Add("сен 04", 1024);
+//        ostatki.Add("сен 05", 760);
+//        ostatki.Add("сен 06", 804);
+//        ostatki.Add("сен 07", 835);
+//        ostatki.Add("сен 10", 990);
+//        ostatki.Add("сен 11", 870);
+//        ostatki.Add("сен 12", 882);
+//        ostatki.Add("сен 13", 837);
+//        ostatki.Add("сен 14", 809);
+//        ostatki.Add("сен 15", 943);
 
-        ostatki.Add("сен 04", 1024);
-        ostatki.Add("сен 05", 760);
-        ostatki.Add("сен 06", 804);
-        ostatki.Add("сен 07", 835);
-        ostatki.Add("сен 10", 990);
-        ostatki.Add("сен 11", 870);
-        ostatki.Add("сен 12", 882);
-        ostatki.Add("сен 13", 837);
-        ostatki.Add("сен 14", 809);
-        ostatki.Add("сен 15", 943);
-
-        chart = new InfostatChart(ostatki, "Динамика остатков ЦУВП ПФР в Республике Бурятия", 1300f);
+        chart = new InfostatChart(processCompl, "Динамика выполнения процессов ЦУВП ПФР в Республике Бурятия", 1300f);
 
         panelMenu.setWidth("100%");
         panelMenu.addComponent(menuMain);

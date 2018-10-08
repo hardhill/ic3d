@@ -1,7 +1,7 @@
 package pfr.center.models;
 
 public class Department {
-    Long id_depart;
+    int id_depart;
     String name_dep;
     String num_reg;
     String name_reg;
@@ -13,11 +13,11 @@ public class Department {
     }
 
 
-    public Long getId_depart() {
+    public int getId_depart() {
         return id_depart;
     }
 
-    public void setId_depart(Long id_depart) {
+    public void setId_depart(int id_depart) {
         this.id_depart = id_depart;
     }
 

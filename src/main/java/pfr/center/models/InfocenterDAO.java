@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import pfr.center.MainUI;
 
+import java.sql.Date;
 import java.util.List;
 
 public class InfocenterDAO implements IRepository{
 
+    private static final String SQL_GET_PROCESSBYDATE = "SELECT ID_DEPART, DATEOFCOMP ,SUM(process_end.SUMM) as SUMM FROM process_end WHERE (ID_DEPART=?)AND(DATEOFCOMP=?)";
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -33,6 +35,19 @@ public class InfocenterDAO implements IRepository{
     @Override
     public List<Department> getAllDepartment() {
         return jdbcTemplate.query(SQL_GET_ALLDEPART, new DepartmentMapper());
+    }
+
+    @Override
+    public ProcessEnd getProcesses(int id_depart, Date date) {
+        ProcessEnd processEnd = new ProcessEnd();
+        jdbcTemplate.query(SQL_GET_PROCESSBYDATE, new Object[]{id_depart,date},(result)->{
+            if(result.first()) {
+                processEnd.setId_depart(result.getInt("ID_DEPART"));
+                processEnd.setDateofcomp(result.getDate("DATEOFCOMP"));
+                processEnd.setSumm(result.getInt("SUMM"));
+            }
+        });
+        return processEnd;
     }
 
 

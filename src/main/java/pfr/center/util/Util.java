@@ -3,6 +3,7 @@ package pfr.center.util;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
 
 public class Util {
     public static String getHash256(String string)  {
@@ -24,5 +25,10 @@ public class Util {
         }
         messageDigest.update(string.getBytes(StandardCharsets.UTF_8));
         return new String(messageDigest.digest());
+    }
+
+    public static Date[] GetLastTenDates(){
+        Date[] dates={};
+        return dates;
     }
 }

@@ -3,6 +3,7 @@ package pfr.center.models;
 import java.util.ArrayList;
 import java.util.List;
 
+//для добавлени данных в график выполненных процессов
 public class ProcessCompl {
 
     List<DataGraph> dataGraphList = new ArrayList<>();
@@ -13,6 +14,33 @@ public class ProcessCompl {
 
     public void Add(String label,Integer value){
         dataGraphList.add(new DataGraph(label,value,0));
+    }
+
+    public void CalculateDelta() {
+        List<ProcessCompl.DataGraph> lstProc = this.getDataGraphList();
+        for (int i = 1; i < lstProc.size(); i++) {
+            lstProc.get(i).delta = lstProc.get(i).value - lstProc.get(i - 1).value;
+        }
+    }
+
+    public List<String> getAllLabels(){
+        List<String> lst = new ArrayList<>();
+        for (DataGraph prc : dataGraphList) {
+            lst.add(prc.getLabel());
+        }
+        return lst;
+    }
+
+    public int Length() {
+        return dataGraphList.size();
+    }
+
+    public double getValueByIndex(int i) {
+        return getDataGraphList().get(i).getValue();
+    }
+
+    public void DeleteAll() {
+        dataGraphList.clear();
     }
 
     public class DataGraph{
