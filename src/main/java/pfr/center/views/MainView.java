@@ -14,6 +14,7 @@ import pfr.center.util.Util;
 import pfr.center.views.components.InfostatChart;
 
 import java.sql.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,13 +35,15 @@ public class MainView extends VerticalLayout implements View {
         this.setMargin(true);
         infocenterDAO = new InfocenterDAO();
         List<Department> departments = new ArrayList<>();
-        Date[] dates10 = Util.GetLastTenDates();
+        //последние 10 дней
+        ArrayList<Date> dates10 = Util.GetLastDates(9);
         departments = infocenterDAO.getAllDepartment();
         selectorDepart.setItemCaptionGenerator(Department::getName_reg);
         selectorDepart.setWidth("250px");
         selectorDepart.setItems(departments);
         selectorDepart.setEmptySelectionAllowed(false);
         selectorDepart.setEmptySelectionCaption("ЦУВП ПФР в РБ");
+        //изменение списка районов
         selectorDepart.addValueChangeListener(event->{
             if(event.getSource().isEmpty()){
 
@@ -51,7 +54,7 @@ public class MainView extends VerticalLayout implements View {
                 processCompl.DeleteAll();
                 for(Date d:dates10){
                     ProcessEnd processEnd = infocenterDAO.getProcesses(dep.getId_depart(),d);
-                    processCompl.Add(processEnd.getDateofcomp().toString(),processEnd.getSumm());
+                    processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM")),processEnd.getSumm());
                 }
 
 
@@ -61,8 +64,9 @@ public class MainView extends VerticalLayout implements View {
         });
         //по-умолчанию взял ЦУВП
         for(Date d:dates10){
-            ProcessEnd processEnd = infocenterDAO.getProcesses(25,d);
-            processCompl.Add(processEnd.getDateofcomp().toString(),processEnd.getSumm());
+            ProcessEnd processEnd = infocenterDAO.getProcesses(35,d);
+            String dateStr = d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd"));
+            processCompl.Add(dateStr,processEnd.getSumm());
         }
 
         //selectorDepart.
@@ -79,7 +83,7 @@ public class MainView extends VerticalLayout implements View {
 //        ostatki.Add("сен 14", 809);
 //        ostatki.Add("сен 15", 943);
 
-        chart = new InfostatChart(processCompl, "Динамика выполнения процессов ЦУВП ПФР в Республике Бурятия", 1300f);
+        chart = new InfostatChart(processCompl, "Динамика выполнения процессов ЦУВП ПФР в РБ", 1300f);
 
         panelMenu.setWidth("100%");
         panelMenu.addComponent(menuMain);

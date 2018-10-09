@@ -8,5 +8,5 @@ public interface IRepository {
     Staff getStaffbyId(Long id);
     List<Department> getAllDepartment();
     ProcessEnd getProcesses(int id_depart, Date date);
-
+    //ProcessEnd getListProcess(int id_depart, Date date);
 }
