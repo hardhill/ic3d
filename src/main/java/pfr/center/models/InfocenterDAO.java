@@ -11,8 +11,8 @@ import java.util.List;
 
 public class InfocenterDAO implements IRepository{
 
-    private static final String SQL_GET_PROCESSBYDATE = "SELECT ID_DEPART, COUNT(process_end.ID_DEPART) as SUMM " +
-            "FROM process_end WHERE (ID_DEPART=?)AND(DATE(DATEOFCOMP)=?) GROUP BY ID_DEPART";
+    private static final String SQL_GET_PROCESSBYDATE = "SELECT ID_DEPART, COUNT(process_task.ID_DEPART) as SUMM " +
+            "FROM process_task WHERE (ID_DEPART=?)AND(DATE(DATEOFCOMP)=?) GROUP BY ID_DEPART";
     @Autowired
     JdbcTemplate jdbcTemplate;
 

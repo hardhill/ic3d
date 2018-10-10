@@ -2,10 +2,10 @@ package pfr.center.views.components;
 
 public class DataGraph{
     private String label;
-    private Integer value;
+    private Double value;
     private Integer delta;
 
-    public DataGraph(String label, Integer value, Integer delta) {
+    public DataGraph(String label, Double value, Integer delta) {
         this.label = label;
         this.value = value;
         this.delta = delta;
@@ -19,11 +19,11 @@ public class DataGraph{
         this.label = label;
     }
 
-    public Integer getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 

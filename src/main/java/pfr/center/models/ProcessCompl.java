@@ -1,5 +1,7 @@
 package pfr.center.models;
 
+import pfr.center.views.components.DataGraph;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +15,7 @@ public class ProcessCompl {
     }
 
     public void Add(String label,Integer value){
-        dataGraphList.add(new DataGraph(label,value,0));
-    }
-
-    public void CalculateDelta() {
-        List<ProcessCompl.DataGraph> lstProc = this.getDataGraphList();
-        for (int i = 1; i < lstProc.size(); i++) {
-            lstProc.get(i).delta = lstProc.get(i).value - lstProc.get(i - 1).value;
-        }
+        dataGraphList.add(new DataGraph(label, (double) value, 0));
     }
 
     public List<String> getAllLabels(){
@@ -43,40 +38,6 @@ public class ProcessCompl {
         dataGraphList.clear();
     }
 
-    public class DataGraph{
-        private String label;
-        private Integer value;
-        private Integer delta;
 
-        public DataGraph(String label, Integer value, Integer delta) {
-            this.label = label;
-            this.value = value;
-            this.delta = delta;
-        }
-
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        public Integer getValue() {
-            return value;
-        }
-
-        public void setValue(Integer value) {
-            this.value = value;
-        }
-
-        public Integer getDelta() {
-            return delta;
-        }
-
-        public void setDelta(Integer delta) {
-            this.delta = delta;
-        }
-    }
 
 }

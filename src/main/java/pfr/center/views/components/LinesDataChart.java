@@ -1,10 +1,15 @@
 package pfr.center.views.components;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LinesDataChart {
     private List<String> labels;
-    private List<LineData> lineData;
+    private List<LineData> linesData;
+
+    public LinesDataChart() {
+        linesData = new ArrayList<>();
+    }
 
     public List<String> getLabels() {
         return labels;
@@ -15,20 +20,34 @@ public class LinesDataChart {
     }
 
     public List<LineData> getLineData() {
-        return lineData;
+        return linesData;
     }
 
-    public void setLineData(List<LineData> lineData) {
-        this.lineData = lineData;
+    public void setLineData(List<LineData> linesData) {
+        this.linesData = linesData;
     }
 
-    private class LineData{
+    public void addNewLine(LineData line) {
+        linesData.add(line);
+    }
+
+    public static class LineData {
         private List<DataGraph> lineDataGraph;
         private String colorLine;
+        private int borderWidth = 2;
+
         void  AddPoint(DataGraph dataGraph){
             lineDataGraph.add(dataGraph);
         }
 
+        public List<Double> getValues() {
+            List<Double> lst = new ArrayList<>();
+            for (DataGraph dg : getLineDataGraph()) {
+                lst.add(dg.getValue());
+            }
+
+            return lst;
+        }
         public List<DataGraph> getLineDataGraph() {
             return lineDataGraph;
         }
@@ -43,6 +62,21 @@ public class LinesDataChart {
 
         public void setColorLine(String colorLine) {
             this.colorLine = colorLine;
+        }
+
+        public void CalculateDelta() {
+            List<DataGraph> lst = this.getLineDataGraph();
+            for (int i = 1; i < lst.size(); i++) {
+                lst.get(i).setDelta((int) (lst.get(i).getValue() - lst.get(i - 1).getValue()));
+            }
+        }
+
+        public int getBorderWidth() {
+            return borderWidth;
+        }
+
+        public void setBorderWidth(int borderWidth) {
+            this.borderWidth = borderWidth;
         }
     }
 }

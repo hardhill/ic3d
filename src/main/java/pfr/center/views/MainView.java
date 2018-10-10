@@ -12,6 +12,7 @@ import pfr.center.UserInfo;
 import pfr.center.models.*;
 import pfr.center.util.Util;
 import pfr.center.views.components.InfostatChart;
+import pfr.center.views.components.LinesDataChart;
 
 import java.sql.Date;
 import java.time.format.DateTimeFormatter;
@@ -47,21 +48,55 @@ public class MainView extends VerticalLayout implements View {
         selectorDepart.addValueChangeListener(event->{
             if(event.getSource().isEmpty()){
 
-            }else if(event.getOldValue()==null){
+            } else if (event.getOldValue() == null) {    //впервые
                 // поменять график
                Department dep = event.getValue();
 
                 processCompl.DeleteAll();
                 for(Date d:dates10){
                     ProcessEnd processEnd = infocenterDAO.getProcesses(dep.getId_depart(),d);
-                    processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM")),processEnd.getSumm());
+                    processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processEnd.getSumm());
                 }
 
+                LinesDataChart linesDataChart = new LinesDataChart();
+                linesDataChart.setLabels(processCompl.getAllLabels());
+                LinesDataChart.LineData lineData = new LinesDataChart.LineData();
+                lineData.setColorLine("blue");
+                lineData.setLineDataGraph(processCompl.getDataGraphList());
+                lineData.CalculateDelta();
+                linesDataChart.addNewLine(lineData);
+                chart.setTitle("Динамика выполнения процессов и остатков в " + dep.getName_dep());
+
+
+                //рисуем график по данным
+                chart.UpdateDataSet(linesDataChart);
+                chart.ChartRefresh();
+                chart.GridUpdate(linesDataChart);
 
             }else{
+                // поменять график
+                Department dep = event.getValue();
 
+                processCompl.DeleteAll();
+                for (Date d : dates10) {
+                    ProcessEnd processEnd = infocenterDAO.getProcesses(dep.getId_depart(), d);
+                    processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processEnd.getSumm());
+                }
+
+                LinesDataChart linesDataChart = new LinesDataChart();
+                linesDataChart.setLabels(processCompl.getAllLabels());
+                LinesDataChart.LineData lineData = new LinesDataChart.LineData();
+                lineData.setColorLine("red");
+                lineData.setLineDataGraph(processCompl.getDataGraphList());
+                lineData.CalculateDelta();
+                linesDataChart.addNewLine(lineData);
+                chart.setTitle("Динамика выполнения процессов в " + dep.getName_dep());
+                chart.UpdateDataSet(linesDataChart);
+                chart.ChartRefresh();
+                chart.GridUpdate(linesDataChart);
             }
         });
+
         //по-умолчанию взял ЦУВП
         for(Date d:dates10){
             ProcessEnd processEnd = infocenterDAO.getProcesses(35,d);
@@ -69,21 +104,17 @@ public class MainView extends VerticalLayout implements View {
             processCompl.Add(dateStr,processEnd.getSumm());
         }
 
-        //selectorDepart.
-//        Ostatki ostatki = new Ostatki();
-//
-//        ostatki.Add("сен 04", 1024);
-//        ostatki.Add("сен 05", 760);
-//        ostatki.Add("сен 06", 804);
-//        ostatki.Add("сен 07", 835);
-//        ostatki.Add("сен 10", 990);
-//        ostatki.Add("сен 11", 870);
-//        ostatki.Add("сен 12", 882);
-//        ostatki.Add("сен 13", 837);
-//        ostatki.Add("сен 14", 809);
-//        ostatki.Add("сен 15", 943);
-
-        chart = new InfostatChart(processCompl, "Динамика выполнения процессов ЦУВП ПФР в РБ", 1300f);
+        //приготовить структуру данных для графика
+        LinesDataChart linesDataChart = new LinesDataChart();
+        linesDataChart.setLabels(processCompl.getAllLabels());
+        LinesDataChart.LineData lineData = new LinesDataChart.LineData();
+        lineData.setColorLine("red");
+        lineData.setLineDataGraph(processCompl.getDataGraphList());
+        lineData.CalculateDelta();
+        linesDataChart.addNewLine(lineData);
+        chart = new InfostatChart(linesDataChart);
+        chart.setTitle("Динамика выполнения процессов в ЦУВП по РБ");
+        chart.UpdateDataSet(linesDataChart);
 
         panelMenu.setWidth("100%");
         panelMenu.addComponent(menuMain);
