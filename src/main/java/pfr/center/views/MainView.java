@@ -12,11 +12,11 @@ import pfr.center.UserInfo;
 import pfr.center.models.*;
 import pfr.center.util.Util;
 import pfr.center.views.components.InfostatChart;
+import pfr.center.views.components.LinesDataChart;
 
 import java.sql.Date;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class MainView extends VerticalLayout implements View {
@@ -28,7 +28,9 @@ public class MainView extends VerticalLayout implements View {
     private MenuBar menuMain = new MenuBar();
     private Link linkPortal = new Link("ИНФОЦЕНТР-ПОРТАЛ", new ExternalResource("http://10.3.59.113/"));
     private ComboBox<Department> selectorDepart = new ComboBox<>();
-    private ProcessCompl processCompl = new ProcessCompl();
+    private Processes processCompl = new Processes();
+    private Processes processOstat = new Processes();
+    private Processes processNew = new Processes();
 
     public MainView(MainUI main) {
         this.main = main;
@@ -43,48 +45,30 @@ public class MainView extends VerticalLayout implements View {
         selectorDepart.setItems(departments);
         selectorDepart.setEmptySelectionAllowed(false);
         selectorDepart.setEmptySelectionCaption("ЦУВП ПФР в РБ");
+
         //изменение списка районов
         selectorDepart.addValueChangeListener(event->{
             if(event.getSource().isEmpty()){
 
-            }else if(event.getOldValue()==null){
+            } else if (event.getOldValue() == null) {    //впервые
                 // поменять график
                Department dep = event.getValue();
 
-                processCompl.DeleteAll();
-                for(Date d:dates10){
-                    ProcessEnd processEnd = infocenterDAO.getProcesses(dep.getId_depart(),d);
-                    processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MM")),processEnd.getSumm());
-                }
-
+                GenerateGrafikbyDepart(dates10, dep);
 
             }else{
+                // поменять график
+                Department dep = event.getValue();
 
+                GenerateGrafikbyDepart(dates10, dep);
             }
         });
-        //по-умолчанию взял ЦУВП
-        for(Date d:dates10){
-            ProcessEnd processEnd = infocenterDAO.getProcesses(35,d);
-            String dateStr = d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd"));
-            processCompl.Add(dateStr,processEnd.getSumm());
-        }
 
-        //selectorDepart.
-//        Ostatki ostatki = new Ostatki();
-//
-//        ostatki.Add("сен 04", 1024);
-//        ostatki.Add("сен 05", 760);
-//        ostatki.Add("сен 06", 804);
-//        ostatki.Add("сен 07", 835);
-//        ostatki.Add("сен 10", 990);
-//        ostatki.Add("сен 11", 870);
-//        ostatki.Add("сен 12", 882);
-//        ostatki.Add("сен 13", 837);
-//        ostatki.Add("сен 14", 809);
-//        ostatki.Add("сен 15", 943);
+        Department dep = departments.stream().filter(element -> element.getId_depart() == 35).findAny().orElse(null);
+        //selectorDepart.setSelectedItem(dep);
+        GenerateGrafikbyDepart(dates10, dep);
 
-        chart = new InfostatChart(processCompl, "Динамика выполнения процессов ЦУВП ПФР в РБ", 1300f);
-
+//------------------------------------------------------------------------------------------
         panelMenu.setWidth("100%");
         panelMenu.addComponent(menuMain);
         panelMenu.setComponentAlignment(menuMain, Alignment.MIDDLE_LEFT);
@@ -106,6 +90,48 @@ public class MainView extends VerticalLayout implements View {
         setComponentAlignment(panelGraph, Alignment.MIDDLE_CENTER);
         Page.getCurrent().setTitle("ИНФОЦЕНТР 3.0");
 
+    }
+
+    private void GenerateGrafikbyDepart(ArrayList<Date> dates10, Department dep) {
+        processCompl.DeleteAll();
+        processOstat.DeleteAll();
+        processNew.DeleteAll();
+        for (Date d : dates10) {
+            ProcessIn processAsNew = infocenterDAO.getProcessNew(dep.getId_depart(), d);
+            ProcessIn processIn = infocenterDAO.getOstatok(dep.getId_depart(), d);
+            ProcessIn processOut = infocenterDAO.getProcessCompl(dep.getId_depart(), d);
+            processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processOut.getSumm());
+            processOstat.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processIn.getSumm());
+            processNew.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processAsNew.getSumm());
+        }
+
+        LinesDataChart linesDataChart = new LinesDataChart();
+        linesDataChart.setLabels(processCompl.getAllLabels());
+        LinesDataChart.LineData lineData = new LinesDataChart.LineData();
+        lineData.setColorLine("red");
+        lineData.setLineDataGraph(processCompl.getDataGraphList());
+        lineData.CalculateDelta();
+        linesDataChart.addNewLine(lineData);
+        //теперь линия графика остатков
+        lineData = new LinesDataChart.LineData();
+        lineData.setColorLine("blue");
+        lineData.setLineDataGraph(processOstat.getDataGraphList());
+        lineData.CalculateDelta();
+        linesDataChart.addNewLine(lineData);
+        //пришедшие дела
+        lineData = new LinesDataChart.LineData();
+        lineData.setColorLine("gray");
+        lineData.setLineDataGraph(processNew.getDataGraphList());
+        lineData.CalculateDelta();
+        linesDataChart.addNewLine(lineData);
+        if (chart == null) {
+            chart = new InfostatChart(linesDataChart);
+        }
+        chart.setTitle("Динамика выполнения процессов и остатков в " + dep.getName_dep());
+        //рисуем график по данным
+        chart.UpdateDataSet(linesDataChart);
+        chart.ChartRefresh();
+        chart.GridUpdate(linesDataChart);
     }
 
     private void DrawMainMenu(MenuBar menuMain) {

@@ -6,13 +6,20 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import pfr.center.MainUI;
 
 import java.sql.Date;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class InfocenterDAO implements IRepository{
 
-    private static final String SQL_GET_PROCESSBYDATE = "SELECT ID_DEPART, COUNT(process_end.ID_DEPART) as SUMM " +
-            "FROM process_end WHERE (ID_DEPART=?)AND(DATE(DATEOFCOMP)=?) GROUP BY ID_DEPART";
+    private static final String SQL_GET_PROCESSBYDATE = "select pr.id_depart as DEP, count(pr.summ) as SUMM " +
+            "from (select ID_DEPART, count(ID_PROCESS) as SUMM FROM process_task WHERE (ID_DEPART=?)" +
+            "AND(DATE(DATEOFCOMP)=?) group by ID_PROCESS) as pr group by pr.id_depart";
+    private static final String SQL_GET_OSTATBYDATE = "select pr.id_depart as DEP, count(pr.summ) as SUMM " +
+            "from (select ID_DEPART, count(ID_PROCESS) as SUMM FROM process_task WHERE (ID_DEPART=?)" +
+            "AND((DATE(DATEOFCOMP)>?)OR(DATEOFCOMP IS null)) group by ID_PROCESS) as pr group by pr.id_depart";
+    private static final String SQL_GET_NEWPROCESSBYDATE = "select pr.id_depart as DEP, count(pr.summ) as SUMM " +
+            "from (select ID_DEPART, count(ID_PROCESS) as SUMM FROM process_task WHERE (ID_DEPART=?)" +
+            "AND(DATE(DATEOFCOMM)=?) group by ID_PROCESS) as pr group by pr.id_depart";
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -40,28 +47,49 @@ public class InfocenterDAO implements IRepository{
         return jdbcTemplate.query(SQL_GET_ALLDEPART, new DepartmentMapper());
     }
 
-//    @Override
-//    public ProcessEnd getProcesses(int id_depart, Date date) {
-//        ProcessEnd processEnd = new ProcessEnd();
-//        jdbcTemplate.query(SQL_GET_PROCESSBYDATE, new Object[]{id_depart,date.toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)},
-//                (result)->{
-//            if(result.first()) {
-//                processEnd.setId_depart(result.getInt("ID_DEPART"));
-//                processEnd.setSumm(result.getInt("SUMM"));
-//            }
-//        });
-//        return processEnd;
-//    }
-
     @Override
-    public ProcessEnd getProcesses(int id_depart, Date date) {
-        ProcessEnd processEnd = new ProcessEnd();
+    public ProcessIn getProcessCompl(int id_depart, Date date) {
+        ProcessIn processIn = new ProcessIn();
         SqlRowSet result=jdbcTemplate.queryForRowSet(SQL_GET_PROCESSBYDATE,new Object[]{id_depart,date});
         while (result.next()){
-            processEnd.setId_depart(result.getInt("ID_DEPART"));
-            processEnd.setSumm(result.getInt("SUMM"));
+            processIn.setId_depart(result.getInt("DEP"));
+            processIn.setSumm(result.getInt("SUMM"));
         }
-        return processEnd;
+        if (processIn.isEmpty()) {
+            processIn.setId_depart(id_depart);
+            processIn.setSumm(0);
+        }
+        return processIn;
+    }
+
+    @Override
+    public ProcessIn getProcessNew(int id_depart, Date date) {
+        ProcessIn processIn = new ProcessIn();
+        SqlRowSet result = jdbcTemplate.queryForRowSet(SQL_GET_NEWPROCESSBYDATE, new Object[]{id_depart, date});
+        while (result.next()) {
+            processIn.setId_depart(result.getInt("DEP"));
+            processIn.setSumm(result.getInt("SUMM"));
+        }
+        if (processIn.isEmpty()) {
+            processIn.setId_depart(id_depart);
+            processIn.setSumm(0);
+        }
+        return processIn;
+    }
+
+    @Override
+    public ProcessIn getOstatok(int id_depart, Date d) {
+        ProcessIn processIn = new ProcessIn();
+        SqlRowSet result = jdbcTemplate.queryForRowSet(SQL_GET_OSTATBYDATE, new Object[]{id_depart, d});
+        while (result.next()) {
+            processIn.setId_depart(result.getInt("DEP"));
+            processIn.setSumm(result.getInt("SUMM"));
+        }
+        if (processIn.isEmpty()) {
+            processIn.setId_depart(id_depart);
+            processIn.setSumm(0);
+        }
+        return processIn;
     }
 
 
