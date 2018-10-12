@@ -2,7 +2,7 @@ package pfr.center.models;
 
 import java.sql.Date;
 
-public class ProcessIn {
+public class ProcessOne {
     private Long id_task;
     private Integer id_depart;
     private Long id_process;
@@ -17,7 +17,7 @@ public class ProcessIn {
     private Integer transact;
     private Integer summ;
 
-    public ProcessIn() {
+    public ProcessOne() {
         id_depart = null;
         summ = 0;
     }

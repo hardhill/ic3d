@@ -13,7 +13,6 @@ public class DepartmentMapper implements RowMapper<Department> {
         Department district = new Department();
         district.setId_depart(resultSet.getInt("ID_DEPART"));
         district.setName_dep(resultSet.getString("NAME_DEP"));
-        district.setNum_reg(resultSet.getString("NUM_REG"));
         district.setName_reg(resultSet.getString("NAME_REG"));
         district.setInfo(resultSet.getString("INFO"));
         return district;

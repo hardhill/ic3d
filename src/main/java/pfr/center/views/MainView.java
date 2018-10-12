@@ -97,14 +97,14 @@ public class MainView extends VerticalLayout implements View {
         processOstat.DeleteAll();
         processNew.DeleteAll();
         for (Date d : dates10) {
-            ProcessIn processAsNew = infocenterDAO.getProcessNew(dep.getId_depart(), d);
-            ProcessIn processIn = infocenterDAO.getOstatok(dep.getId_depart(), d);
-            ProcessIn processOut = infocenterDAO.getProcessCompl(dep.getId_depart(), d);
-            processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processOut.getSumm());
-            processOstat.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processIn.getSumm());
-            processNew.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("MMM-dd")), processAsNew.getSumm());
+            ProcessOne processAsNew = infocenterDAO.getProcessNew(dep.getId_depart(), d);
+            ProcessOne processOne = infocenterDAO.getOstatok(dep.getId_depart(), d);
+            ProcessOne processOut = infocenterDAO.getProcessCompl(dep.getId_depart(), d);
+            processCompl.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MMM")), processOut.getSumm());
+            processOstat.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MMM")), processOne.getSumm());
+            processNew.Add(d.toLocalDate().format(DateTimeFormatter.ofPattern("dd-MMM")), processAsNew.getSumm());
         }
-
+        //исолненные процессы
         LinesDataChart linesDataChart = new LinesDataChart();
         linesDataChart.setLabels(processCompl.getAllLabels());
         LinesDataChart.LineData lineData = new LinesDataChart.LineData();
@@ -125,7 +125,7 @@ public class MainView extends VerticalLayout implements View {
         lineData.CalculateDelta();
         linesDataChart.addNewLine(lineData);
         if (chart == null) {
-            chart = new InfostatChart(linesDataChart);
+            chart = new InfostatChart();
         }
         chart.setTitle("Динамика выполнения процессов и остатков в " + dep.getName_dep());
         //рисуем график по данным

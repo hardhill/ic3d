@@ -3,7 +3,6 @@ package pfr.center.models;
 public class Department {
     int id_depart;
     String name_dep;
-    String num_reg;
     String name_reg;
     String info;
 
@@ -15,7 +14,6 @@ public class Department {
     public Department(int id_depart, String name_dep, String num_reg, String name_reg, String info) {
         this.id_depart = id_depart;
         this.name_dep = name_dep;
-        this.num_reg = num_reg;
         this.name_reg = name_reg;
         this.info = info;
     }
@@ -36,13 +34,6 @@ public class Department {
         this.name_dep = name_dep;
     }
 
-    public String getNum_reg() {
-        return num_reg;
-    }
-
-    public void setNum_reg(String num_reg) {
-        this.num_reg = num_reg;
-    }
 
     public String getName_reg() {
         return name_reg;

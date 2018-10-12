@@ -25,7 +25,7 @@ public class InfocenterDAO implements IRepository{
 
     final private String SQL_GET_ALL = "SELECT * FROM staff";
     final private String SQL_GET_STAFF = "SELECT * FROM staff WHERE staff.ID_STAFF = ?";
-    final private String SQL_GET_ALLDEPART = "SELECT * FROM department ORDER BY department.NAME_REG";
+    final private String SQL_GET_ALLDEPART = "SELECT * FROM department ORDER BY department.ID_DEPART";
 
     public InfocenterDAO() {
         jdbcTemplate = new JdbcTemplate();
@@ -48,48 +48,48 @@ public class InfocenterDAO implements IRepository{
     }
 
     @Override
-    public ProcessIn getProcessCompl(int id_depart, Date date) {
-        ProcessIn processIn = new ProcessIn();
+    public ProcessOne getProcessCompl(int id_depart, Date date) {
+        ProcessOne processOne = new ProcessOne();
         SqlRowSet result=jdbcTemplate.queryForRowSet(SQL_GET_PROCESSBYDATE,new Object[]{id_depart,date});
         while (result.next()){
-            processIn.setId_depart(result.getInt("DEP"));
-            processIn.setSumm(result.getInt("SUMM"));
+            processOne.setId_depart(result.getInt("DEP"));
+            processOne.setSumm(result.getInt("SUMM"));
         }
-        if (processIn.isEmpty()) {
-            processIn.setId_depart(id_depart);
-            processIn.setSumm(0);
+        if (processOne.isEmpty()) {
+            processOne.setId_depart(id_depart);
+            processOne.setSumm(0);
         }
-        return processIn;
+        return processOne;
     }
 
     @Override
-    public ProcessIn getProcessNew(int id_depart, Date date) {
-        ProcessIn processIn = new ProcessIn();
+    public ProcessOne getProcessNew(int id_depart, Date date) {
+        ProcessOne processOne = new ProcessOne();
         SqlRowSet result = jdbcTemplate.queryForRowSet(SQL_GET_NEWPROCESSBYDATE, new Object[]{id_depart, date});
         while (result.next()) {
-            processIn.setId_depart(result.getInt("DEP"));
-            processIn.setSumm(result.getInt("SUMM"));
+            processOne.setId_depart(result.getInt("DEP"));
+            processOne.setSumm(result.getInt("SUMM"));
         }
-        if (processIn.isEmpty()) {
-            processIn.setId_depart(id_depart);
-            processIn.setSumm(0);
+        if (processOne.isEmpty()) {
+            processOne.setId_depart(id_depart);
+            processOne.setSumm(0);
         }
-        return processIn;
+        return processOne;
     }
 
     @Override
-    public ProcessIn getOstatok(int id_depart, Date d) {
-        ProcessIn processIn = new ProcessIn();
+    public ProcessOne getOstatok(int id_depart, Date d) {
+        ProcessOne processOne = new ProcessOne();
         SqlRowSet result = jdbcTemplate.queryForRowSet(SQL_GET_OSTATBYDATE, new Object[]{id_depart, d});
         while (result.next()) {
-            processIn.setId_depart(result.getInt("DEP"));
-            processIn.setSumm(result.getInt("SUMM"));
+            processOne.setId_depart(result.getInt("DEP"));
+            processOne.setSumm(result.getInt("SUMM"));
         }
-        if (processIn.isEmpty()) {
-            processIn.setId_depart(id_depart);
-            processIn.setSumm(0);
+        if (processOne.isEmpty()) {
+            processOne.setId_depart(id_depart);
+            processOne.setSumm(0);
         }
-        return processIn;
+        return processOne;
     }
 
 

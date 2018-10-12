@@ -8,9 +8,9 @@ public interface IRepository {
     Staff getStaffbyId(Long id);
     List<Department> getAllDepartment();
 
-    ProcessIn getOstatok(int id_depart, Date date);
+    ProcessOne getOstatok(int id_depart, Date date);
 
-    ProcessIn getProcessCompl(int id_depart, Date date);
+    ProcessOne getProcessCompl(int id_depart, Date date);
 
-    ProcessIn getProcessNew(int id_depart, Date date);
+    ProcessOne getProcessNew(int id_depart, Date date);
 }

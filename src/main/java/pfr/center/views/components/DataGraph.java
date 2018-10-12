@@ -1,6 +1,9 @@
 package pfr.center.views.components;
 
-public class DataGraph{
+import com.sun.xml.internal.ws.developer.Serialization;
+
+@Serialization
+public class DataGraph {
     private String label;
     private Double value;
     private Integer delta;
