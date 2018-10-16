@@ -4,7 +4,6 @@ import com.byteowls.vaadin.chartjs.ChartJs;
 import com.byteowls.vaadin.chartjs.config.LineChartConfig;
 import com.byteowls.vaadin.chartjs.data.LineDataset;
 import com.byteowls.vaadin.chartjs.options.Position;
-import com.sun.xml.internal.ws.developer.Serialization;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.HtmlRenderer;
@@ -177,7 +176,7 @@ public class InfostatChart extends CustomComponent {
         }
     }
 
-    @Serialization
+
     public static class DataGrid {
         private String label;
         private Integer val01;
