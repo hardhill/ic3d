@@ -169,7 +169,7 @@ public class MainView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         if (VaadinSession.getCurrent().getSession().getId() == UserInfo.getInstance().getUserID()) {
-            Notification.show("Данные графика демонстрационные.");
+
         } else {
             this.main.navigator.navigateTo("login");
         }

@@ -31,7 +31,7 @@ public class InfostatChart extends CustomComponent {
         lstDataGrid = new ArrayList<>();
         grid = new Grid<>();
         grid.addColumn(DataGrid::getLabel).setWidth(100d).setCaption("дата");
-        grid.addColumn(elem -> ConvertorProcess.ValueProcNew(elem.getVal01()), new HtmlRenderer()).setWidth(90d).setCaption("на исп.");
+        grid.addColumn(elem -> ConvertorProcess.ValueProcNew(elem.getVal01()), new HtmlRenderer()).setWidth(90d).setCaption("нов.");
         grid.addColumn(elem -> ConvertorProcess.ValueProcOstat(elem.getVal02()), new HtmlRenderer()).setWidth(90d).setCaption("остат.");
         grid.addColumn(elem -> ConvertorProcess.ValueProcCompl(elem.getVal03()), new HtmlRenderer()).setWidth(90d).setCaption("выполн.");
         //Grid.Column column = grid.addColumn(element -> ConvertorDelta.ValueDelta(element.getDelta()), new HtmlRenderer());
